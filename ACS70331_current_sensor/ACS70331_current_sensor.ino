@@ -1,16 +1,18 @@
 /*  ACS70331 Current Sensor
  
-output = 800mV per Amp
+  output = 800mV per Amp
 
-  V = ADCvalue*((5/1024)
- mV = ADCvalue*((5000/1024)
- I (A) = mV/800
+       V = ADCvalue*((5/1024)
+      mV = ADCvalue*((5000/1024)
 
- I (A)  = ADCvalue*((5/1024)*1000)/800)
+   I (A) = V * 1000/800
+   I (A) = V * 5/4
+  I (mA) = V * 5000/4
+  I (mA) = V * 1250
 
- I (A)  = ADCvalue*(25/4096)
+ I (mA)  = ADCvalue*((5/1024)*1250)
 
- I (mA) = ADCvalue*(3125/512)
+
 
 */
 
@@ -33,14 +35,10 @@ float ADC_to_voltage(int16_t ADC_value) {
   return voltage;
 }
 
-float ADC_to_current(int16_t ADC_value) {
-  float current = float(ADC_value) * (25.0 / 4096.0);
-  return current;
-}
 
 float v_to_I(float voltage) {
-  float current = voltage * (50 / 4);   // Not correct I dont think check tomorrow
-  return current;
+  float current_mA = voltage*(1250);   // Not correct I dont think check tomorrow
+  return current_mA;
 }
 
 void loop() {

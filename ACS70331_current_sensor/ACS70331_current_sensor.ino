@@ -23,7 +23,7 @@ autoDelay currentSampleDelay;
 
 #define SAMPLE_DELAY_mS 100
 
-
+#define VOLTAGE_OFFSET 1.567
 
 void setup() {
   Serial.begin(115200);
@@ -37,7 +37,7 @@ float ADC_to_voltage(int16_t ADC_value) {
 
 
 float v_to_I(float voltage) {
-  float current_mA = voltage*(1250);   // Not correct I dont think check tomorrow
+  float current_mA = (voltage-VOLTAGE_OFFSET)*(1250);   // Not correct I dont think check tomorrow
   return current_mA;
 }
 

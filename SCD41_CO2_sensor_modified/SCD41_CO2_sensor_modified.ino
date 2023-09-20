@@ -39,6 +39,18 @@ void setup() {
 
 
 void loop() {
+  scd41_Data SCD41_data;
   delay(100);
-  scd41_Loop();
+  // char co2Buffer[8];
+  char tempBuffer[8];
+  char humidBuffer[8];
+  char printBuffer[128];
+  SCD41_data = scd41_Loop();
+  if (isDataReady) {            // only print data if it contains data
+    //  dtostrf(SCD41_data.CO2 , 4, 2, co2Buffer);  // CO2 is not a float
+    dtostrf(SCD41_data.temperature, 4, 2, tempBuffer);
+    dtostrf(SCD41_data.humidity, 4, 2, humidBuffer);
+    sprintf(printBuffer, "| SCD41: CO2: %4i, Temperature: %s, Humidity: %s |", SCD41_data.CO2, tempBuffer, humidBuffer);
+    Serial.println(printBuffer);
+  }
 }

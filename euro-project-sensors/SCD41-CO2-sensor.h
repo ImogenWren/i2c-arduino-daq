@@ -1,6 +1,14 @@
 
 SensirionI2CScd4x scd4x;
 
+bool scd41_DataReady = false;  // Dont like as global but quick fix
+
+struct scd41_Data {
+  uint16_t CO2;
+  float temperature;
+  float humidity;
+};
+
 void printUint16Hex(uint16_t value) {
   Serial.print(value < 4096 ? "0" : "");
   Serial.print(value < 256 ? "0" : "");
@@ -17,7 +25,8 @@ void printSerialNumber(uint16_t serial0, uint16_t serial1, uint16_t serial2) {
 }
 
 
-void scd41_Setup(){
+void scd41_Setup() {
+  Serial.println("\nSCD41 - CO2 - Temp - Humidity Sensor - Starting");
 
   uint16_t error;
   char errorMessage[256];
@@ -56,40 +65,45 @@ void scd41_Setup(){
 }
 
 
-void scd41_Loop(){
-    uint16_t error;
+scd41_Data scd41_Loop() {
+  scd41_Data SCD41_data;
+  uint16_t error;
   char errorMessage[256];
 
-    // Read Measurement
-    uint16_t co2 = 0;
-    float temperature = 0.0f;
-    float humidity = 0.0f;
-    bool isDataReady = false;
-    error = scd4x.getDataReadyFlag(isDataReady);
-    if (error) {
-      Serial.print("Error trying to execute getDataReadyFlag(): ");
-      errorToString(error, errorMessage, 256);
-      Serial.println(errorMessage);
-      return;
-    }
-    if (!isDataReady) {
-      return;
-    }
-    error = scd4x.readMeasurement(co2, temperature, humidity);
-    if (error) {
-      Serial.print("Error trying to execute readMeasurement(): ");
-      errorToString(error, errorMessage, 256);
-      Serial.println(errorMessage);
-    } else if (co2 == 0) {
-      Serial.println("Invalid sample detected, skipping.");
-    } else {
-      Serial.print("Co2:");
-      Serial.print(co2);
-      Serial.print("\t");
-      Serial.print("Temperature:");
-      Serial.print(temperature);
-      Serial.print("\t");
-      Serial.print("Humidity:");
-      Serial.println(humidity);
-    }
+  // Read Measurement
+  uint16_t co2 = 0;
+  float temperature = 0.0f;
+  float humidity = 0.0f;
+  scd41_DataReady = false;
+  error = scd4x.getDataReadyFlag(scd41_DataReady);
+  if (error) {
+    Serial.print("Error trying to execute getDataReadyFlag(): ");
+    errorToString(error, errorMessage, 256);
+    Serial.println(errorMessage);
+    return;
   }
+  if (!scd41_DataReady) {
+    return;
+  }
+  error = scd4x.readMeasurement(co2, temperature, humidity);
+  if (error) {
+    Serial.print("Error trying to execute readMeasurement(): ");
+    errorToString(error, errorMessage, 256);
+    Serial.println(errorMessage);
+    return;
+  } else if (co2 == 0) {
+    Serial.println("Invalid sample detected, skipping.");
+    return;
+  } else {
+    //Serial.print("CO2:");
+    //Serial.print(co2);
+    //Serial.print("\t");
+    //Serial.print("Temperature:");
+    //Serial.print(temperature);
+    //Serial.print("\t");
+    //Serial.print("Humidity:");
+    //Serial.println(humidity);
+    SCD41_data = { co2, temperature, humidity };
+    return SCD41_data;
+  }
+}

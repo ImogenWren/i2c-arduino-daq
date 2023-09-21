@@ -1,3 +1,5 @@
+/*
+
 #define CURRENT_SENSE_PIN A1
 #define SAMPLE_DELAY_mS 100
 #define VOLTAGE_OFFSET 1.567
@@ -37,3 +39,5 @@ float ACS70331_Loop() {
 
   return current;
 }
+
+*/

@@ -11,8 +11,6 @@ SCL -> A5 -> Yellow
  */
 
 #include <Arduino.h>
-#include <SensirionI2CScd4x.h>
-#include <SensirionI2CStc3x.h>
 #include <Wire.h>
 
 
@@ -23,6 +21,7 @@ autoDelay printDelay;
 
 #include "SCD41-CO2-sensor.h"
 #include "STC31-CO2-sensor.h"
+#include "SHT41-HT-sensor.h"
 #include "ACS70331-current-sensor.h"
 
 
@@ -36,6 +35,8 @@ void setup() {
   Wire.begin();
   scd41_Setup();
   stc31_Setup();
+  sht41_Setup();
+
   // ACS70331_Setup();
 }
 
@@ -56,7 +57,14 @@ void loop() {
   stc31_Data STC31_data;
   char gasBuffer[8];
   char stc_tempBuffer[8];
-  STC31_data = stc31_Loop();
+ // STC31_data = stc31_Loop();
+
+  sht41_Data SHT41_data;
+  char sht_humidBuffer[8];
+  char sht_tempBuffer[8];
+  SHT41_data = sht41_Loop();
+
+
 
 
 
@@ -68,13 +76,21 @@ void loop() {
     if (sampleData) {
       dtostrf(SCD41_data.temperature, 4, 2, scd_tempBuffer);
       dtostrf(SCD41_data.humidity, 4, 2, humidBuffer);
-      sprintf(printBuffer, "| SCD41: CO2: %4i ppm, Temperature: %s degC, Humidity: %s \% |", SCD41_data.CO2, scd_tempBuffer, humidBuffer);
+      sprintf(printBuffer, "| SCD41: CO2: %4i ppm, Temperature: %s degC, Humidity: %s %% |", SCD41_data.CO2, scd_tempBuffer, humidBuffer);
       Serial.print(printBuffer);
 
       dtostrf(STC31_data.gasConcentration, 4, 2, gasBuffer);
       dtostrf(STC31_data.gasTemperature, 4, 2, stc_tempBuffer);
       sprintf(printBuffer, "| STC31: CO2: %s ppm, Temperature %s degC|", gasBuffer, stc_tempBuffer);
+   ///   Serial.println(printBuffer);
+
+
+      dtostrf(SHT41_data.temperature, 4, 2, sht_tempBuffer);
+      dtostrf(SHT41_data.humidity, 4, 2, sht_humidBuffer);
+      sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer);
       Serial.println(printBuffer);
+
+
       //  countdown = 6;
       sampleData = false;
     }

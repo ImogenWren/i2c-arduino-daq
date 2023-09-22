@@ -1,4 +1,6 @@
 
+#include <SensirionI2CScd4x.h>
+
 SensirionI2CScd4x scd4x;
 
 bool scd41_DataReady = false;  // Dont like as global but quick fix

@@ -1,4 +1,8 @@
 
+
+#include <SensirionI2CStc3x.h>
+
+
 SensirionI2CStc3x stc3x;
 
 

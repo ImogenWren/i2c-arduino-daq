@@ -41,6 +41,8 @@ void stc31_Setup() {
       //  sprintf(buffer, "SerialNumber: %llu", serialNumber);
       //  Serial.println(buffer);
     }
+    stc3x.enableAutomaticSelfCalibration();
+   // stc3x.setBinaryGas(STC3X_BINARY_GAS_CO2_AIR_25);
   }
 
 
@@ -87,8 +89,8 @@ stc31_Data stc31_Loop() {
     //   Serial.println(errorMessage);
     return;
   } else {
-     gasConcentration = 100 * ((float)gasTicks - 16384.0) / 32768.0;
-   // gasConcentration = (float)gasTicks/16.0;
+  gasConcentration = 100 * ((float)gasTicks - 16384.0) / 32768.0;
+ //. gasConcentration = (float)gasTicks - 15000;
     //  Serial.print("GasConcentration:");
     //   Serial.print(gasConcentration);
     //Serial.print();

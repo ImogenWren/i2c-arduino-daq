@@ -29,6 +29,11 @@ bool SHT41_ACTIVE = true;
 #include "ACS70331-current-sensor.h"
 
 
+void printDataHeader(){
+  Serial.println("SDC41:CO2,Temp,Humid,STC31:CO2,SHT:Temp,Humid,");
+}
+
+
 void setup() {
   Serial.begin(115200);
   while (!Serial) {
@@ -47,6 +52,7 @@ void setup() {
    sht41_Setup();
   }
   // ACS70331_Setup();
+  printDataHeader();
 }
 
 //int countdown = 5;
@@ -76,39 +82,45 @@ void loop() {
 
 
 
-
-  if (scd41_DataReady) {  // only print data if sensor has new data
+/*
+  if (scd41_DataReady ) {  // print data if sensor has new data - DISABLED for now
     sampleData = true;
   }
+*/
+
 
   if (printDelay.secondsDelay(PRINT_DELAY_S)) {
-    if (sampleData) {
+  
+  //  if (sampleData) {
 
       if (SCD41_ACTIVE){
       dtostrf(SCD41_data.temperature, 4, 2, scd_tempBuffer);
       dtostrf(SCD41_data.humidity, 4, 2, humidBuffer);
-      sprintf(printBuffer, "| SCD41: CO2: %4i ppm, Temperature: %s degC, Humidity: %s %% |", SCD41_data.CO2, scd_tempBuffer, humidBuffer);
+      //sprintf(printBuffer, "| SCD41: CO2: %4i ppm, Temperature: %s degC, Humidity: %s %% |", SCD41_data.CO2, scd_tempBuffer, humidBuffer);
+      sprintf(printBuffer, "%4i, %s, %s,", SCD41_data.CO2, scd_tempBuffer, humidBuffer);
       Serial.print(printBuffer);
       }
 
       if (STC31_ACTIVE){
       dtostrf(STC31_data.gasConcentration, 4, 2, gasBuffer);
       dtostrf(STC31_data.gasTemperature, 4, 2, stc_tempBuffer);
-      sprintf(printBuffer, "| STC31: CO2: %s ppm, Temperature %s degC|", gasBuffer, stc_tempBuffer);
+      //sprintf(printBuffer, "| STC31: CO2: %s ppm, Temperature %s degC|", gasBuffer, stc_tempBuffer);
+      sprintf(printBuffer, " %s,", gasBuffer);
       Serial.print(printBuffer);
       }
 
       if (SHT41_ACTIVE){
       dtostrf(SHT41_data.temperature, 4, 2, sht_tempBuffer);
       dtostrf(SHT41_data.humidity, 4, 2, sht_humidBuffer);
-      sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer);
+      //sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer);
+      sprintf(printBuffer, " %s,  %s", sht_tempBuffer, sht_humidBuffer);
       Serial.print(printBuffer);
       }
 
       //  countdown = 6;
       Serial.println();
       sampleData = false;
-    }
+  //  }
   } else {
     // Just for debugging timings
     // Serial.print("Count: ");

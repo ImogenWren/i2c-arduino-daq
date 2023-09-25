@@ -23,7 +23,7 @@ struct sht41_Data {
 
 
 void sht41_Setup() {
-  Serial.println("\nSHT41 - Temp - Humidity - Sensor - Starting");
+ // Serial.println("\nSHT41 - Temp - Humidity - Sensor - Starting");
 
   // init on a specific sensor type (i.e. without auto detecting),
   // does not check if the sensor is responding and will thus always succeed.
@@ -46,9 +46,10 @@ sht41_Data sht41_Loop() {
       SHT41_data = { sht4x.getHumidity(), sht4x.getTemperature() };
       return SHT41_data;
     } else {
-      Serial.print("SHT41: Error in readSample()\n");
-      SHT41_ACTIVE = false;
-      return;
+      // Serial.print("SHT41: Error in readSample()\n");
+      //  SHT41_ACTIVE = false;
+      SHT41_data = { 0, 0 };
+      return SHT41_data;
     }
   }
 }

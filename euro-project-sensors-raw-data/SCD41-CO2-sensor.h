@@ -29,7 +29,7 @@ void printSerialNumber(uint16_t serial0, uint16_t serial1, uint16_t serial2) {
 */
 
 void scd41_Setup() {
-  Serial.println("\nSCD41 - CO2 - Temp - Humidity Sensor - Starting");
+  // Serial.println("\nSCD41 - CO2 - Temp - Humidity Sensor - Starting");
 
   uint16_t error;
   // char errorMessage[128];
@@ -50,7 +50,7 @@ void scd41_Setup() {
   error = scd4x.getSerialNumber(serial0, serial1, serial2);
   if (error) {
     Serial.println("SCD41: Error executing getSerialNumber(): ");
-    SCD41_ACTIVE = false;
+    // SCD41_ACTIVE = false;
     //  errorToString(error, errorMessage, 256);
     //  Serial.println(errorMessage);
   } else {
@@ -65,13 +65,14 @@ void scd41_Setup() {
     // Serial.println(errorMessage);
   }
 
-  Serial.println("SCD41: Waiting for first measurement... (5 sec)");
+  //  Serial.println("SCD41: Waiting for first measurement... (5 sec)");
 }
 
 // scd41_Data SCD41_data; // making this global so this function can just update the global variable every time new data is available.
+scd41_Data scd41_data;
 
 scd41_Data scd41_Loop() {
-  scd41_Data SCD41_data;
+
 
   uint16_t error;
   // char errorMessage[64];
@@ -83,23 +84,26 @@ scd41_Data scd41_Loop() {
   scd41_DataReady = false;
   error = scd4x.getDataReadyFlag(scd41_DataReady);
   if (error) {
-    Serial.print("SCD41: Error executing getDataReadyFlag(): ");
+    //Serial.println("SCD41: Error executing getDataReadyFlag(): ");
     // errorToString(error, errorMessage, 128);
     // Serial.println(errorMessage);
-    return;
+    scd41_data = { 0, 0, 0 };
+    return scd41_data;
   }
   if (!scd41_DataReady) {
-    return;
+    return scd41_data;
   }
   error = scd4x.readMeasurement(co2, temperature, humidity);
   if (error) {
-    Serial.print("SCD41: Error executing readMeasurement(): ");
+    Serial.println("SCD41: Error executing readMeasurement(): ");
     //   errorToString(error, errorMessage, 256);
     //   Serial.println(errorMessage);
-    return;
+    scd41_data = { 0, 0, 0 };
+    return scd41_data;
   } else if (co2 == 0) {
     Serial.println("SCD41: Invalid sample detected, skipping.");
-    return;
+    scd41_data = { 0, 0, 0 };
+    return scd41_data;
   } else {
     //Serial.print("CO2:");
     //Serial.print(co2);
@@ -109,7 +113,7 @@ scd41_Data scd41_Loop() {
     //Serial.print("\t");
     //Serial.print("Humidity:");
     //Serial.println(humidity);
-    SCD41_data = { co2, temperature, humidity };
-    return SCD41_data;
+    scd41_data = { co2, temperature, humidity };
   }
+  return scd41_data;
 }

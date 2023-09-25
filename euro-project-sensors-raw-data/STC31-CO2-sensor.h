@@ -15,7 +15,7 @@ struct stc31_Data {
 
 
 void stc31_Setup() {
-  Serial.println("\nSTC31 - CO2 - Temperature - Sensor - Starting");
+ // Serial.println("\nSTC31 - CO2 - Temperature - Sensor - Starting");
 
   uint16_t error;
   // char errorMessage[64];
@@ -35,13 +35,13 @@ void stc31_Setup() {
                                         serialNumberSize);
     if (error) {
       Serial.println("STC31: Error executing readProductIdentifier(): ");
-      STC31_ACTIVE = false;
+    //  STC31_ACTIVE = false;
       //   errorToString(error, errorMessage, 256);
       //   Serial.println(errorMessage);
     } else {
       //  uint64_t serialNumber = (uint64_t)serialNumberRaw[0] << 56 | (uint64_t)serialNumberRaw[1] << 48 | (uint64_t)serialNumberRaw[2] << 40 | (uint64_t)serialNumberRaw[3] << 32 | (uint64_t)serialNumberRaw[4] << 24 | (uint64_t)serialNumberRaw[5] << 16 | (uint64_t)serialNumberRaw[6] << 8 | (uint64_t)serialNumberRaw[7];
-      Serial.print("STC31: ProductNumber: 0x");
-      Serial.println(productNumber, HEX);
+  //   Serial.print("STC31: ProductNumber: 0x");
+     // Serial.println(productNumber, HEX);
       //  char buffer[20];
       //  sprintf(buffer, "SerialNumber: %llu", serialNumber);
       //  Serial.println(buffer);
@@ -59,7 +59,7 @@ void stc31_Setup() {
   } else {
     char buffer[32];
     sprintf(buffer, "Self Test: 0x%04x (OK = 0x0000)", selfTestOutput);
-    Serial.println(buffer);
+ //   Serial.println(buffer);
   }
 
   error = stc3x.setBinaryGas(0x0001);
@@ -68,7 +68,7 @@ void stc31_Setup() {
     //   errorToString(error, errorMessage, 256);
     //   Serial.println(errorMessage);
   } else {
-    Serial.println("Set binary gas to 0x0001");
+ //   Serial.println("Set binary gas to 0x0001");
   }
 }
 
@@ -85,10 +85,10 @@ stc31_Data stc31_Loop() {
 
   error = stc3x.measureGasConcentration(gasTicks, temperatureTicks);
   if (error) {
-    Serial.println("STC31: Error executing measureGasConcentration(): ");
+   // Serial.println("STC31: Error executing measureGasConcentration(): ");
     //  errorToString(error, errorMessage, 256);
     //   Serial.println(errorMessage);
-    return;
+    STC31_data = {0,0};
   } else {
   gasConcentration = 100 * ((float)gasTicks - 16384.0) / 32768.0;
  //. gasConcentration = (float)gasTicks - 15000;

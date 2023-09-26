@@ -113,7 +113,7 @@ void loop() {
       dtostrf(SHT41_data.temperature, 4, 2, sht_tempBuffer);
       dtostrf(SHT41_data.humidity, 4, 2, sht_humidBuffer);
       //sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer);
-      sprintf(printBuffer, " %s,  %s", sht_tempBuffer, sht_humidBuffer);
+      sprintf(printBuffer, " %s, %s", sht_tempBuffer, sht_humidBuffer);
       Serial.print(printBuffer);
       }
 

@@ -1,4 +1,4 @@
-/* # Sensirion SCD41 - CO2 Sensor - i2c
+/*  # Sensirion SCD41 - CO2 Sensor - i2c
 
 - 5v or 3.3v (calibrated for 3.3v)
 
@@ -11,6 +11,7 @@
 
 
  */
+
 
 
 #include <SensirionI2CScd4x.h>
@@ -78,7 +79,6 @@ void scd41_Setup() {
     //  errorToString(error, errorMessage, 256);
     // Serial.println(errorMessage);
   }
-
   //  Serial.println("SCD41: Waiting for first measurement... (5 sec)");
 }
 

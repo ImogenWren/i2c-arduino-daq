@@ -27,8 +27,15 @@
 
 #include <Wire.h>
 
+// Incorrect
 #include <SparkFun_I2C_Mux_Arduino_Library.h>  //Click here to get the library: http://librarymanager/All#SparkFun_I2C_Mux
 QWIICMUX myMux;
+
+// Maybe Correct?
+#include <ClosedCube_TCA9548A.h>
+#define TCA9548A_I2C_ADDRESS 0x70
+
+ClosedCube::Wired::TCA9548A tca9548a;
 
 
 #include <autoDelay.h>
@@ -51,24 +58,42 @@ void setup() {
 
   Wire.begin();
 
+  Serial.println("ClosedCube TCA9548A Channel Scanner Demo");
 
-  if (myMux.begin() == false) {
+ // tca9548a.address(TCA9548A_I2C_ADDRESS);
+
+
+   if (myMux.begin(0x70, Wire) == false) {
     Serial.println("Mux not detected. Freezing...");
     while (1) {
-      Serial.println("Here");
-    }
-  }
-  Serial.println("Mux detected");
+       Serial.println("Here");
+     }
+   }
+   Serial.println("Mux detected");
 
   delay(500);
-  myMux.setPort(0);  //Connect master to port labeled '1' on the mux
 
-  byte currentPortNumber = myMux.getPort();
-  Serial.print("CurrentPort: ");
-  Serial.println(currentPortNumber);
+   myMux.setPort(0);  //Connect master to port labeled '1' on the mux OR 0?
+
+
+//  uint8_t returnCode = tca9548a.selectChannel(1);
+//  if (returnCode == 0) {
+//    Serial.println("i2c Device Found");
+ // } else {
+ //   Serial.print("Error scan channel (Code:");
+  //  Serial.print(returnCode);
+ //   Serial.println(")");
+ // }
+
+
+  byte currentChannel = myMux.getPort();
+//uint8_t currentChannel = tca9548a.getChannel();
+
+  Serial.print("CurrentChannel: ");
+  Serial.println(currentChannel);
   delay(1000);
   Serial.println("Begin Sensor Setup");
-//  myMux.enablePort(0);
+  //  myMux.enablePort(0);
   scd41_Setup();
 }
 
@@ -97,7 +122,6 @@ void loop() {
     }
     Serial.println();
   } else {
-
   }
 }
 

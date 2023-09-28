@@ -4,10 +4,10 @@
 
  - Pinout: ** Double Check
 
- 	- SDA:   Yellow
+ 	- SCL:   Yellow
 	- GND: 	  black
   - Vdd:    Red
-	- SCL:   green
+	- SDA:   green
 
 
  */

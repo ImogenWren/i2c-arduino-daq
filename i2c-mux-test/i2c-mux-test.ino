@@ -1,41 +1,42 @@
-/*
-  Use the Qwiic Mux to access multiple I2C devices on seperate busses.
-  By: Nathan Seidle @ SparkFun Electronics
-  Date: May 17th, 2020
-  License: This code is public domain but you buy me a beer if you use this
-  and we meet someday (Beerware license).
+/* # European Project i2c Sensor Mux
 
-  Some I2C devices respond to only one I2C address. This can be a problem
-  when you want to hook multiple of a device to the I2C bus. An I2C Mux
-  solves this issue by allowing you to change the 'channel' or port that
-  the master is talking to.
 
-  This example shows how to connect to different ports.
-  The TCA9548A is a mux. This means when you enableMuxPort(2) then the SDA and SCL lines of the master (Arduino)
-  are connected to port 2. Whatever I2C traffic you do, such as distanceSensor.startRanging() will be communicated to whatever
-  sensor you have on port 2.
+List of Sensors and Mux Channel Numbers
+Mux 0 = i2c bus from nano
+Mux 1 = Mux Module 1
+Mux 2 = Mux Module 2 (for later expansion if required)
+ 
+|No. |Sensor Name (system)  |	Sensor Type (model) |	Data Returned       |	Units                 |	Sample Rate  (Hz or every X seconds)| Mux/Channel  |
+|--- |---                   |---                  |---                  |---                    |---                                  |---           |
+| 1  | CD1                  | SEK-SCD41 - CO2     | CO2, Temp, Humidity | ppm/fraction, degC, % | 5 s                                 |  1.0         |
+| 2  | CD2                  | SEK-SCD41 - CO2     | CO2, Temp, Humidity | ppm/fraction, degC, % | 5 s                                 |  1.1         |
+| 3  | CD3                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.0         |
+| 4  | CD4                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.1         |
+| 5  | CD5                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.2         |
+| 6  | CD6                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.3         |
+| 7  | RHT3                 | SEK-SHT41I-AD1B     | Temp, Humidity      | degC, %               | 4 s                                 |  1.4         |
+| 8  | RHT4                 | SEK-SHT41I-AD1B     | Temp, Humidity      | degC, %               | 4 s                                 |  1.5         |
+| 9  | RHT5                 | SEK-SHT41I-AD1B     | Temp, Humidity      | degC, %               | 4 s                                 |  1.6         |
+| 10 | RHT6                 | SEK-SHT41I-AD1B     | Temp, Humidity      | degC, %               | 4 s                                 |  1.7         |
+| 11 | Mux 1                | I2C MUX 3 click     | i2C Mux             | n/a                   | n/a                                 |  0.0         |
+| 12 | Mux 2                | I2C MUX 3 click     | i2C Mux             | n/a                   | n/a                                 |  0.1  (change address)|
 
-  Hardware Connections:
-  Attach the Qwiic Mux Shield to your RedBoard or Uno.
-  Plug a device into port 0 or 1
-  Serial.print it out at 115200 baud to serial monitor.
 
-  SparkFun labored with love to create this code. Feel like supporting open
-  source? Buy a board from SparkFun!
-  https://www.sparkfun.com/products/14685
+
+
 */
 
 #include <Wire.h>
 
-// Incorrect
+
 #include <SparkFun_I2C_Mux_Arduino_Library.h>  //Click here to get the library: http://librarymanager/All#SparkFun_I2C_Mux
-QWIICMUX myMux;
+QWIICMUX senseMux;
 
 // Maybe Correct?
-#include <ClosedCube_TCA9548A.h>
-#define TCA9548A_I2C_ADDRESS 0x70
+//#include <ClosedCube_TCA9548A.h>
+//#define TCA9548A_I2C_ADDRESS 0x70
 
-ClosedCube::Wired::TCA9548A tca9548a;
+//ClosedCube::Wired::TCA9548A tca9548a;
 
 
 #include <autoDelay.h>
@@ -52,15 +53,10 @@ bool SHT41_ACTIVE = true;
 
 void setup() {
   Serial.begin(115200);
-  Serial.println();
-  Serial.println("Qwiic Mux Shield Read Example");
+  Serial.println("\nSensor i2c Mux");
   delay(500);
 
   Wire.begin();
-
-  Serial.println("ClosedCube TCA9548A Channel Scanner Demo");
-
- // tca9548a.address(TCA9548A_I2C_ADDRESS);
 
 
    if (myMux.begin(0x70, Wire) == false) {
@@ -95,6 +91,7 @@ void setup() {
   Serial.println("Begin Sensor Setup");
   //  myMux.enablePort(0);
   scd41_Setup();
+
 }
 
 

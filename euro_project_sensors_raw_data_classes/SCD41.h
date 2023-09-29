@@ -21,12 +21,10 @@
 #include <SensirionI2CScd4x.h>
 
 class SCD41 {
-
-
 public:
 
   SensirionI2CScd4x scd4x;
-  
+
 
   struct scd41_Data {
     uint16_t CO2;
@@ -53,3 +51,5 @@ public:
 
 private:
 };
+
+#endif

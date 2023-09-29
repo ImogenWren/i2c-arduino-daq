@@ -67,11 +67,12 @@ bool SCD41_ACTIVE = true;
 bool STC31_ACTIVE = true;
 bool SHT41_ACTIVE = true;
 
-#include "SCD41-CO2-sensor.h"
+#include "SCD41.h"
 #include "STC31-CO2-sensor.h"
 #include "SHT41-HT-sensor.h"
 //#include "ACS70331-current-sensor.h" Not required for Arduino
 
+SCD41 CD1;
 
 void printDataHeader(){
   Serial.println("SDC41:CO2,Temp,Humid,STC31:CO2,SHT:Temp,Humid,");
@@ -87,7 +88,7 @@ void setup() {
   delay(1000);
   Wire.begin();
   if (SCD41_ACTIVE){
-  scd41_Setup();
+  CD1.scd41_Setup();
   }
   if (STC31_ACTIVE){
   stc31_Setup(); 
@@ -108,10 +109,10 @@ void loop() {
   char printBuffer[64];  // all sensors share
 
 
-  scd41_Data SCD41_data;
+  CD1.scd41_Data SCD41_data;
   char scd_tempBuffer[8];
   char humidBuffer[8];
-  SCD41_data = scd41_Loop();  // This only updates data ~ every 5 seconds - now has global falg to identify when data has been updated
+  SCD41_data = CD1.scd41_Loop();  // This only updates data ~ every 5 seconds - now has global falg to identify when data has been updated
 
   stc31_Data STC31_data;
   char gasBuffer[8];

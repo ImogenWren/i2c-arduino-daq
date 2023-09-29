@@ -4,7 +4,7 @@
 
  - Pinout:
  
-	- Vdd:     green
+	- Vdd:    green
 	- SCL:    brown
 	- GND: 	  pink
 	- SDA:   Yellow

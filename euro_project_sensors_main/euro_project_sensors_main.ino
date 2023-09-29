@@ -10,7 +10,7 @@ Mux 2 = Mux Module 2 (for later expansion if required)
 |--- |---                   |---                  |---                  |---                    |---                                  |---           |
 | 1  | CD1                  | SEK-SCD41 - CO2     | CO2, Temp, Humidity | ppm/fraction, degC, % | 5 s                                 |  1.0         |
 | 2  | CD2                  | SEK-SCD41 - CO2     | CO2, Temp, Humidity | ppm/fraction, degC, % | 5 s                                 |  1.1         |
-| 3  | CD3                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.0         |
+| 3  | CD3                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.0         |  These might need to move channels
 | 4  | CD4                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.1         |
 | 5  | CD5                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.2         |
 | 6  | CD6                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.3         |
@@ -28,16 +28,16 @@ Mux 2 = Mux Module 2 (for later expansion if required)
 
 
 // define the active sensors
-bool CD1_ACTIVE = false;
-bool CD2_ACTIVE = false;
-bool CD3_ACTIVE = false;
-bool CD4_ACTIVE = false;
-bool CD5_ACTIVE = false;
-bool CD6_ACTIVE = false;
-bool RHT3_ACTIVE = true;
-bool RHT4_ACTIVE = false;
-bool RHT5_ACTIVE = false;
-bool RHT6_ACTIVE = false;
+bool CD1_ACTIVE = 0;
+bool CD2_ACTIVE = 0;
+bool CD3_ACTIVE = 1;
+bool CD4_ACTIVE = 0;
+bool CD5_ACTIVE = 0;
+bool CD6_ACTIVE = 0;
+bool RHT3_ACTIVE = 0;
+bool RHT4_ACTIVE = 0;
+bool RHT5_ACTIVE = 0;
+bool RHT6_ACTIVE = 0;
 
 
 
@@ -150,14 +150,16 @@ void loop() {
   if (printDelay.secondsDelay(PRINT_DELAY_S)) {
     char printBuffer[128];  // all sensors share single print buffer
 
-    if (numSamples > 0) {  //skip printing the 0 sample for stability
+    if (numSamples > 0) {                           //skip printing the 0 sample for stability
+      sprintf(printBuffer, "%03i:  ", numSamples);  // Print number of samples taken for tracking function (remove line if unneeded)
+      Serial.print(printBuffer);
       if (CD1_ACTIVE) {
         char scd_tempBuffer[6];
         char scd_humidBuffer[6];
         dtostrf(CD1_data.temperature, 4, 2, scd_tempBuffer);
         dtostrf(CD1_data.humidity, 4, 2, scd_humidBuffer);
         //sprintf(printBuffer, "| SCD41: CO2: %4i ppm, Temperature: %s degC, Humidity: %s %% |", CD1_data.CO2, scd_tempBuffer, scd_humidBuffer);
-        sprintf(printBuffer, "%03i:  %4i, %s, %s,", numSamples, CD1_data.CO2, scd_tempBuffer, scd_humidBuffer);  // Just the Data
+        sprintf(printBuffer, "%4i, %5s, %5s, ", CD1_data.CO2, scd_tempBuffer, scd_humidBuffer);  // Just the Data
         Serial.print(printBuffer);
       }
       if (CD2_ACTIVE) {
@@ -165,7 +167,7 @@ void loop() {
         char scd_humidBuffer[6];
         dtostrf(CD2_data.temperature, 4, 2, scd_tempBuffer);
         dtostrf(CD2_data.humidity, 4, 2, scd_humidBuffer);
-        sprintf(printBuffer, "%03i:  %4i, %s, %s,", numSamples, CD2_data.CO2, scd_tempBuffer, scd_humidBuffer);  // Just the Data
+        sprintf(printBuffer, "%4i, %5s, %5s, ", CD2_data.CO2, scd_tempBuffer, scd_humidBuffer);  // Just the Data
         Serial.print(printBuffer);
       }
 
@@ -175,7 +177,7 @@ void loop() {
         dtostrf(CD3_data.gasConcentration, 4, 2, stc_gasBuffer);
         dtostrf(CD3_data.gasTemperature, 4, 2, stc_tempBuffer);
         //sprintf(printBuffer, "| STC31: CO2: %s ppm, Temperature %s degC|", gasBuffer, stc_tempBuffer);  // Full UI printout
-        sprintf(printBuffer, " %s,", stc_gasBuffer);  // just the data
+        sprintf(printBuffer, "%5s, ", stc_gasBuffer);  // just the data
         Serial.print(printBuffer);
       }
       if (CD4_ACTIVE) {
@@ -184,7 +186,7 @@ void loop() {
         dtostrf(CD4_data.gasConcentration, 4, 2, stc_gasBuffer);
         dtostrf(CD4_data.gasTemperature, 4, 2, stc_tempBuffer);
         //sprintf(printBuffer, "| STC31: CO2: %s ppm, Temperature %s degC|", gasBuffer, stc_tempBuffer);  // Full UI printout
-        sprintf(printBuffer, " %s,", stc_gasBuffer);  // just the data
+        sprintf(printBuffer, "%5s, ", stc_gasBuffer);  // just the data
         Serial.print(printBuffer);
       }
       if (CD5_ACTIVE) {
@@ -193,7 +195,7 @@ void loop() {
         dtostrf(CD5_data.gasConcentration, 4, 2, stc_gasBuffer);
         dtostrf(CD5_data.gasTemperature, 4, 2, stc_tempBuffer);
         //sprintf(printBuffer, "| STC31: CO2: %s ppm, Temperature %s degC|", gasBuffer, stc_tempBuffer);  // Full UI printout
-        sprintf(printBuffer, " %s,", stc_gasBuffer);  // just the data
+        sprintf(printBuffer, "%5s, ", stc_gasBuffer);  // just the data
         Serial.print(printBuffer);
       }
       if (CD6_ACTIVE) {
@@ -202,7 +204,7 @@ void loop() {
         dtostrf(CD6_data.gasConcentration, 4, 2, stc_gasBuffer);
         dtostrf(CD6_data.gasTemperature, 4, 2, stc_tempBuffer);
         //sprintf(printBuffer, "| STC31: CO2: %s ppm, Temperature %s degC|", gasBuffer, stc_tempBuffer);  // Full UI printout
-        sprintf(printBuffer, " %s,", stc_gasBuffer);  // just the data
+        sprintf(printBuffer, "%5s, ", stc_gasBuffer);  // just the data
         Serial.print(printBuffer);
       }
 
@@ -212,13 +214,36 @@ void loop() {
         dtostrf(RHT3_data.temperature, 4, 2, sht_tempBuffer);
         dtostrf(RHT3_data.humidity, 4, 2, sht_humidBuffer);
         //sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer); // Full UI Printout
-        sprintf(printBuffer, " %s, %s", sht_tempBuffer, sht_humidBuffer);  // just the data
+        sprintf(printBuffer, "%5s, %5s, ", sht_tempBuffer, sht_humidBuffer);  // just the data
         Serial.print(printBuffer);
       }
-
-
-
-
+      if (RHT4_ACTIVE) {
+        char sht_tempBuffer[8];
+        char sht_humidBuffer[8];
+        dtostrf(RHT4_data.temperature, 4, 2, sht_tempBuffer);
+        dtostrf(RHT4_data.humidity, 4, 2, sht_humidBuffer);
+        //sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer); // Full UI Printout
+        sprintf(printBuffer, "%5s, %5s, ", sht_tempBuffer, sht_humidBuffer);  // just the data
+        Serial.print(printBuffer);
+      }
+      if (RHT5_ACTIVE) {
+        char sht_tempBuffer[8];
+        char sht_humidBuffer[8];
+        dtostrf(RHT5_data.temperature, 4, 2, sht_tempBuffer);
+        dtostrf(RHT5_data.humidity, 4, 2, sht_humidBuffer);
+        //sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer); // Full UI Printout
+        sprintf(printBuffer, "%5s, %5s, ", sht_tempBuffer, sht_humidBuffer);  // just the data
+        Serial.print(printBuffer);
+      }
+      if (RHT6_ACTIVE) {
+        char sht_tempBuffer[8];
+        char sht_humidBuffer[8];
+        dtostrf(RHT6_data.temperature, 4, 2, sht_tempBuffer);
+        dtostrf(RHT6_data.humidity, 4, 2, sht_humidBuffer);
+        //sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer); // Full UI Printout
+        sprintf(printBuffer, "%5s, %5s, ", sht_tempBuffer, sht_humidBuffer);  // just the data
+        Serial.print(printBuffer);
+      }
 
       Serial.println();  // Send line return once all data has been sent
     } else {

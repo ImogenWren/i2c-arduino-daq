@@ -10,8 +10,8 @@ Mux 2 = Mux Module 2 (for later expansion if required)
 |--- |---                   |---                  |---                  |---                    |---                                  |---           |
 | 1  | CD1                  | SEK-SCD41 - CO2     | CO2, Temp, Humidity | ppm/fraction, degC, % | 5 s                                 |  1.0         |
 | 2  | CD2                  | SEK-SCD41 - CO2     | CO2, Temp, Humidity | ppm/fraction, degC, % | 5 s                                 |  1.1         |
-| 3  | CD3                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.0         |  These might need to move channels
-| 4  | CD4                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.1         |
+| 3  | CD3                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.4         |  These might need to move channels
+| 4  | CD4                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.5         |
 | 5  | CD5                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.2         |
 | 6  | CD6                  | SEK-STC31 - CO2     | CO2                 | ppm/fraction          | 2 s  (Can work with 4s to match RHT)|  1.3         |
 | 7  | RHT3                 | SEK-SHT41I-AD1B     | Temp, Humidity      | degC, %               | 4 s                                 |  1.0         |
@@ -22,22 +22,28 @@ Mux 2 = Mux Module 2 (for later expansion if required)
 | 12 | Mux 2                | I2C MUX 3 click     | i2C Mux             | n/a                   | n/a                                 |  0.1  (change address)|
 
 
+NOTES:
+  - Issues found with SCD41 and STC31 operating on the same channel.
+    - Moving Channels to Mitigate
+    - Did not change anything
+    - Changed power source to 3v3
+    - Problem solved? For now! [x]
 
 
 */
 
 
 // define the active sensors
-bool CD1_ACTIVE = 0;
-bool CD2_ACTIVE = 0;
+bool CD1_ACTIVE = 1;
+bool CD2_ACTIVE = 1;
 bool CD3_ACTIVE = 1;
-bool CD4_ACTIVE = 0;
-bool CD5_ACTIVE = 0;
-bool CD6_ACTIVE = 0;
-bool RHT3_ACTIVE = 0;
-bool RHT4_ACTIVE = 0;
-bool RHT5_ACTIVE = 0;
-bool RHT6_ACTIVE = 0;
+bool CD4_ACTIVE = 1;
+bool CD5_ACTIVE = 1;
+bool CD6_ACTIVE = 1;
+bool RHT3_ACTIVE = 1;
+bool RHT4_ACTIVE = 1;
+bool RHT5_ACTIVE = 1;
+bool RHT6_ACTIVE = 1;
 
 
 
@@ -86,12 +92,11 @@ void setup() {
 
   sensorMux.setPort(0);  // Ensure that sensors with the same ID are not connected to the same port
   if (CD1_ACTIVE) { CD1.scd41_Setup(); }
-  if (CD3_ACTIVE) { CD3.stc31_Setup(); }
+
   if (RHT3_ACTIVE) { RHT3.sht41_Setup(); }
 
   sensorMux.setPort(1);  //
   if (CD2_ACTIVE) { CD2.scd41_Setup(); }
-  if (CD4_ACTIVE) { CD4.stc31_Setup(); }
   if (RHT4_ACTIVE) { RHT4.sht41_Setup(); }
 
   sensorMux.setPort(2);
@@ -101,6 +106,16 @@ void setup() {
   sensorMux.setPort(3);
   if (CD6_ACTIVE) { CD6.stc31_Setup(); }
   if (RHT6_ACTIVE) { RHT6.sht41_Setup(); }
+
+  sensorMux.setPort(4);
+  if (CD3_ACTIVE) { CD3.stc31_Setup(); }
+
+  sensorMux.setPort(5);
+  if (CD4_ACTIVE) { CD4.stc31_Setup(); }
+
+  // Unused Ports
+  // sensorMux.setPort(6);
+  // sensorMux.setPort(7);
 
   printDataHeader();  // Data header tells user order of data returned via serial
 }
@@ -127,14 +142,14 @@ void loop() {
   SHT41::sht41_Data RHT6_data;  // Return types for SHT Data
 
   // Data gathering methods
-  sensorMux.setPort(0);                                //  Change port address to 0 and read all sensors on 0
-  if (CD1_ACTIVE) { CD1_data = CD1.scd41_Loop(); }     // This only updates data ~ every 5 seconds
-  if (CD3_ACTIVE) { CD3_data = CD3.stc31_Loop(); }     //
+  sensorMux.setPort(0);                             //  Change port address to 0 and read all sensors on 0
+  if (CD1_ACTIVE) { CD1_data = CD1.scd41_Loop(); }  // This only updates data ~ every 5 seconds
+
   if (RHT3_ACTIVE) { RHT3_data = RHT3.sht41_Loop(); }  //
 
-  sensorMux.setPort(1);                                //  Change port address to 1 and read all sensors on 1
-  if (CD2_ACTIVE) { CD2_data = CD2.scd41_Loop(); }     // This only updates data ~ every 5 seconds
-  if (CD4_ACTIVE) { CD4_data = CD4.stc31_Loop(); }     //
+  sensorMux.setPort(1);                             //  Change port address to 1 and read all sensors on 1
+  if (CD2_ACTIVE) { CD2_data = CD2.scd41_Loop(); }  // This only updates data ~ every 5 seconds
+
   if (RHT4_ACTIVE) { RHT4_data = RHT4.sht41_Loop(); }  //
 
   sensorMux.setPort(2);                                //  Change port address to 1 and read all sensors on 2
@@ -144,6 +159,17 @@ void loop() {
   sensorMux.setPort(3);                                //  Change port address to 1 and read all sensors on 3
   if (CD6_ACTIVE) { CD6_data = CD6.stc31_Loop(); }     //
   if (RHT6_ACTIVE) { RHT6_data = RHT6.sht41_Loop(); }  //
+
+
+  sensorMux.setPort(4);
+  if (CD3_ACTIVE) { CD3_data = CD3.stc31_Loop(); }  //
+
+  sensorMux.setPort(5);
+  if (CD4_ACTIVE) { CD4_data = CD4.stc31_Loop(); }  //
+
+  // Unused Ports
+  //  sensorMux.setPort(6);
+  // sensorMux.setPort(7);
 
 
   // Printing/transmitting data to serial output

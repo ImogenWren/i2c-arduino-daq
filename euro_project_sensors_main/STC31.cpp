@@ -1,3 +1,5 @@
+
+
 /* # Sensirion SEK-STC31 - CO2 Sensor - i2c
 
 - 5v or 3.3v (calibrated for 3.3v)

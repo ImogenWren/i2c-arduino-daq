@@ -141,7 +141,10 @@ void loop() {
   SHT41::sht41_Data RHT5_data;  // Return types for SHT Data
   SHT41::sht41_Data RHT6_data;  // Return types for SHT Data
 
+
+
   // Data gathering methods
+  // USER NOTE: change order here to set port for each sensor
   sensorMux.setPort(0);                             //  Change port address to 0 and read all sensors on 0
   if (CD1_ACTIVE) { CD1_data = CD1.scd41_Loop(); }  // This only updates data ~ every 5 seconds
 

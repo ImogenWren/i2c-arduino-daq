@@ -13,7 +13,7 @@ void setupMux() {
       Serial.println("Please Reset Arduino");
     }
   }
-  Serial.println("Mux detected");
+ // Serial.println("Mux detected");
   delay(500);
 }
 
@@ -21,8 +21,8 @@ void setupMux() {
 
 void checkMuxPort(){
   byte currentChannel = sensorMux.getPort();
-  Serial.print("CurrentChannel: ");
-  Serial.println(currentChannel);
+//  Serial.print("CurrentChannel: ");
+//  Serial.println(currentChannel);
 }
 
 

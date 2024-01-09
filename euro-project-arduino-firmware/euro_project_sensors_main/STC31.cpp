@@ -28,7 +28,7 @@ void STC31::stc31_Setup() {
 
   error = stc3x.prepareProductIdentifier();
   if (error) {
-    Serial.println("STC31: Error executing prepareProductIdentifier(): ");
+  //Serial.println("STC31: Error executing prepareProductIdentifier(): ");
     //  errorToString(error, errorMessage, 256);
     //  Serial.println(errorMessage);
   } else {
@@ -38,7 +38,7 @@ void STC31::stc31_Setup() {
     error = stc3x.readProductIdentifier(productNumber, serialNumberRaw,
                                         serialNumberSize);
     if (error) {
-      Serial.println("STC31: Error executing readProductIdentifier(): ");
+    //  Serial.println("STC31: Error executing readProductIdentifier(): ");
     //  STC31_ACTIVE = false;
       //   errorToString(error, errorMessage, 256);
       //   Serial.println(errorMessage);

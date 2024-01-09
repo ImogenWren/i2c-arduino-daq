@@ -26,7 +26,7 @@ void SCD41::scd41_Setup() {
   // stop potentially previously started measurement
   error = scd4x.stopPeriodicMeasurement();
   if (error) {
-    Serial.println("SCD41: Error executing stopPeriodicMeasurement(): ");
+   // Serial.println("SCD41: Error executing stopPeriodicMeasurement(): ");
     //errorToString(error, errorMessage, 256);
     //  Serial.println(errorMessage);
   }
@@ -36,7 +36,7 @@ void SCD41::scd41_Setup() {
   uint16_t serial2;
   error = scd4x.getSerialNumber(serial0, serial1, serial2);
   if (error) {
-    Serial.println("SCD41: Error executing getSerialNumber(): ");
+  //  Serial.println("SCD41: Error executing getSerialNumber(): ");
     // SCD41_ACTIVE = false;
     //  errorToString(error, errorMessage, 256);
     //  Serial.println(errorMessage);
@@ -47,7 +47,7 @@ void SCD41::scd41_Setup() {
   // Start Measurement
   error = scd4x.startPeriodicMeasurement();
   if (error) {
-    Serial.println("SCD41: Error executing startPeriodicMeasurement(): ");
+  //  Serial.println("SCD41: Error executing startPeriodicMeasurement(): ");
     //  errorToString(error, errorMessage, 256);
     // Serial.println(errorMessage);
   }

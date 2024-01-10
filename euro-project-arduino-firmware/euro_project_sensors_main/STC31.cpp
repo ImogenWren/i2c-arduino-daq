@@ -57,7 +57,7 @@ void STC31::stc31_Setup() {
   uint16_t selfTestOutput;
   error = stc3x.selfTest(selfTestOutput);
   if (error) {
-    Serial.println("STC31: Error trying to execute selfTest(): ");
+   // Serial.println("STC31: Error trying to execute selfTest(): ");
     //   errorToString(error, errorMessage, 256);
     //   Serial.println(errorMessage);
   } else {
@@ -68,7 +68,7 @@ void STC31::stc31_Setup() {
 
   error = stc3x.setBinaryGas(0x0001);
   if (error) {
-    Serial.println("STC31: Error trying to execute selfTest(): ");
+   // Serial.println("STC31: Error trying to execute selfTest(): ");
     //   errorToString(error, errorMessage, 256);
     //   Serial.println(errorMessage);
   } else {

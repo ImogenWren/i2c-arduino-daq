@@ -14,15 +14,16 @@ void setupMux() {
     }
   }
  // Serial.println("Mux detected");
-  delay(500);
+  delay(50);
 }
 
 
 
-void checkMuxPort(){
+byte checkMuxPort(){
   byte currentChannel = sensorMux.getPort();
 //  Serial.print("CurrentChannel: ");
 //  Serial.println(currentChannel);
+return currentChannel;
 }
 
 
@@ -58,5 +59,5 @@ void i2c_scanner() {
     Serial.println("Done");
   }
 
-  delay(1000);
+  delay(100);
 }

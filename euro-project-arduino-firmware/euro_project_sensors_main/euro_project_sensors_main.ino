@@ -79,11 +79,11 @@ SHT41 RHT6;  // Create instance of SHT41 for RHT6
 
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
  // Serial.println("\nSensor i2c Mux");
-  delay(500);
+  delay(50);
   setupMux();
-  delay(500);
+  delay(40);
  // Serial.println("Begin Sensor Setup");
 
   // sensorMux.setPort(0); // Make sure this is set to the port you wish to scan

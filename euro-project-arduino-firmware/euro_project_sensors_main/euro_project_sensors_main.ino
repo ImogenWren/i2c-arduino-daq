@@ -18,8 +18,11 @@ Mux 2 = Mux Module 2 (for later expansion if required)
 | 8  | RHT4                 | SEK-SHT41I-AD1B     | Temp, Humidity      | degC, %               | 4 s                                 |  1.1         |
 | 9  | RHT5                 | SEK-SHT41I-AD1B     | Temp, Humidity      | degC, %               | 4 s                                 |  1.2         |
 | 10 | RHT6                 | SEK-SHT41I-AD1B     | Temp, Humidity      | degC, %               | 4 s                                 |  1.3         |
-| 11 | Mux 1                | I2C MUX 3 click     | i2C Mux             | n/a                   | n/a                                 |  0.0         |
-| 12 | Mux 2                | I2C MUX 3 click     | i2C Mux             | n/a                   | n/a                                 |  0.1  (change address)|
+| 11 | dP1                  | SDP810-125Pa        | i2C Mux             | n/a                   | n/a                                 |  1.5         |
+| 12 | dP2                  | SDP810-500Pa        | i2C Mux             | n/a                   | n/a                                 |  1.6         |
+| 13 | dP3                  | SDP810-500Pa        | i2C Mux             | n/a                   | n/a                                 |  1.7         |
+| 14 | Mux 1                | I2C MUX 3 click     | i2C Mux             | n/a                   | n/a                                 |  0.0         |
+| 15 | Mux 2                | I2C MUX 3 click     | i2C Mux             | n/a                   | n/a                                 |  0.1  (change address)|
 
 
 NOTES:
@@ -44,7 +47,7 @@ bool RHT3_ACTIVE = 0;
 bool RHT4_ACTIVE = 0;
 bool RHT5_ACTIVE = 0;
 bool RHT6_ACTIVE = 0;
-bool dP1_ACTIVE = 0;
+bool dP1_ACTIVE = 1;
 bool dP2_ACTIVE = 0;
 bool dP3_ACTIVE = 0;
 
@@ -79,15 +82,20 @@ SHT41 RHT4;  // Create instance of SHT41 for RHT4
 SHT41 RHT5;  // Create instance of SHT41 for RHT5
 SHT41 RHT6;  // Create instance of SHT41 for RHT6
 
+#include "SDP810.h"
+SDP810 dP1;  // Create instance of SDP810 for dP1
+SDP810 dP2;  // Create instance of SDP810 for dP2
+SDP810 dP3;  // Create instance of SDP810 for dP3
+
 
 
 void setup() {
   Serial.begin(9600);
- // Serial.println("\nSensor i2c Mux");
+  // Serial.println("\nSensor i2c Mux");
   delay(50);
   setupMux();
   delay(40);
- // Serial.println("Begin Sensor Setup");
+  // Serial.println("Begin Sensor Setup");
 
   // sensorMux.setPort(0); // Make sure this is set to the port you wish to scan
   //i2c_scanner(); // Use this section to find attached sensors
@@ -95,7 +103,6 @@ void setup() {
 
   sensorMux.setPort(0);  // Ensure that sensors with the same ID are not connected to the same port
   if (CD1_ACTIVE) { CD1.scd41_Setup(); }
-
   if (RHT3_ACTIVE) { RHT3.sht41_Setup(); }
 
   sensorMux.setPort(1);  //
@@ -115,12 +122,15 @@ void setup() {
 
   sensorMux.setPort(5);
   if (CD4_ACTIVE) { CD4.stc31_Setup(); }
+  if (dP1_ACTIVE) { dP1.sdp810_Setup(); }
 
+  sensorMux.setPort(6);
+  if (dP2_ACTIVE) { dP2.sdp810_Setup(); }
+
+  sensorMux.setPort(7);
+  if (dP3_ACTIVE) { dP3.sdp810_Setup(); }
   // Unused Ports
-  // sensorMux.setPort(6);
-  // sensorMux.setPort(7);
-
- // printDataHeader();  // Data header tells user order of data returned via serial
+  // printDataHeader();  // Data header tells user order of data returned via serial
 }
 
 
@@ -144,6 +154,9 @@ void loop() {
   SHT41::sht41_Data RHT5_data;  // Return types for SHT Data
   SHT41::sht41_Data RHT6_data;  // Return types for SHT Data
 
+  SDP810::sdp810_Data dP1_data;  // return types for SDP810 data
+  SDP810::sdp810_Data dP2_data;  // return types for SDP810 data
+  SDP810::sdp810_Data dP3_data;  // return types for SDP810 data
 
 
   // Data gathering methods
@@ -172,11 +185,15 @@ void loop() {
 
   sensorMux.setPort(5);
   if (CD4_ACTIVE) { CD4_data = CD4.stc31_Loop(); }  //
+  if (dP1_ACTIVE) { dP1_data = dP1.sdp810_Loop(); }
+
+  sensorMux.setPort(6);
+  if (dP2_ACTIVE) { dP2_data = dP2.sdp810_Loop(); }
+
+  sensorMux.setPort(7);
+  if (dP3_ACTIVE) { dP3_data = dP3.sdp810_Loop(); }
 
   // Unused Ports
-  //  sensorMux.setPort(6);
-  // sensorMux.setPort(7);
-
 
   // Printing/transmitting data to serial output
   if (printDelay.secondsDelay(PRINT_DELAY_S)) {
@@ -274,6 +291,30 @@ void loop() {
         dtostrf(RHT6_data.humidity, 4, 2, sht_humidBuffer);
         //sprintf(printBuffer, "| SHT41: Temperature: %s degC, Humidity: %s %% |", sht_tempBuffer, sht_humidBuffer); // Full UI Printout
         sprintf(printBuffer, "%5s, %5s, ", sht_tempBuffer, sht_humidBuffer);  // just the data
+        Serial.print(printBuffer);
+      }
+      if (dP1_ACTIVE) {
+        char sdp_diffPressureBuffer[8];
+        char sdp_tempBuffer[8];
+        dtostrf(dP1_data.diffPressure, 4, 2, sdp_diffPressureBuffer);
+        dtostrf(dP1_data.temp, 4, 2, sdp_tempBuffer);
+        sprintf(printBuffer, "%5s, %5s, ", sdp_diffPressureBuffer, sdp_tempBuffer);  // just the data
+        Serial.print(printBuffer);
+      }
+      if (dP2_ACTIVE) {
+        char sdp_diffPressureBuffer[8];
+        char sdp_tempBuffer[8];
+        dtostrf(dP2_data.diffPressure, 4, 2, sdp_diffPressureBuffer);
+        dtostrf(dP2_data.temp, 4, 2, sdp_tempBuffer);
+        sprintf(printBuffer, "%5s, %5s, ", sdp_diffPressureBuffer, sdp_tempBuffer);  // just the data
+        Serial.print(printBuffer);
+      }
+      if (dP3_ACTIVE) {
+        char sdp_diffPressureBuffer[8];
+        char sdp_tempBuffer[8];
+        dtostrf(dP3_data.diffPressure, 4, 2, sdp_diffPressureBuffer);
+        dtostrf(dP3_data.temp, 4, 2, sdp_tempBuffer);
+        sprintf(printBuffer, "%5s, %5s, ", sdp_diffPressureBuffer, sdp_tempBuffer);  // just the data
         Serial.print(printBuffer);
       }
 

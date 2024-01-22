@@ -2,7 +2,7 @@
 
 #include <SparkFun_I2C_Mux_Arduino_Library.h>  //Click here to get the library: http://librarymanager/All#SparkFun_I2C_Mux
 
-QWIICMUX sensorMux;   // Create instance of i2c mux
+QWIICMUX sensorMux;  // Create instance of i2c mux
 
 
 void setupMux() {
@@ -13,17 +13,17 @@ void setupMux() {
       Serial.println("Please Reset Arduino");
     }
   }
- // Serial.println("Mux detected");
+  // Serial.println("Mux detected");
   delay(50);
 }
 
 
 
-byte checkMuxPort(){
+byte checkMuxPort() {
   byte currentChannel = sensorMux.getPort();
-//  Serial.print("CurrentChannel: ");
-//  Serial.println(currentChannel);
-return currentChannel;
+  //  Serial.print("CurrentChannel: ");
+  //  Serial.println(currentChannel);
+  return currentChannel;
 }
 
 

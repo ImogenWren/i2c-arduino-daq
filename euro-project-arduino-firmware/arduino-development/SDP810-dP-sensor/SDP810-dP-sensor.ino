@@ -57,7 +57,6 @@
 
 
 #include "SDP810.h"
-
 SDP810 dP1;  // Create instance of SDP810 for dP1
 SDP810 dP2;  // Create instance of SDP810 for dP2
 SDP810 dP3;  // Create instance of SDP810 for dP3

@@ -22,27 +22,24 @@
 class STC31 {
 public:
 
-SensirionI2CStc3x stc3x;
+  SensirionI2CStc3x stc3x;
 
 
-struct stc31_Data {
-  float gasConcentration;
-  float gasTemperature;
-};
+  struct stc31_Data {
+    float gasConcentration;
+    float gasTemperature;
+  };
 
 
 
-void stc31_Setup();
+  void stc31_Setup();
 
-stc31_Data stc31_Loop(); // This does return data but now its inside class can just access object globals directly
+  stc31_Data stc31_Loop();  // This does return data but now its inside class can just access object globals directly
 
 
 
 
 private:
-
-
-
 };
 
 

@@ -44,6 +44,9 @@ bool RHT3_ACTIVE = 0;
 bool RHT4_ACTIVE = 0;
 bool RHT5_ACTIVE = 0;
 bool RHT6_ACTIVE = 0;
+bool dP1_ACTIVE = 0;
+bool dP2_ACTIVE = 0;
+bool dP3_ACTIVE = 0;
 
 
 

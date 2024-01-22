@@ -57,20 +57,37 @@
 
 
 #include "SDP810.h"
-// Create instance of SDP810 for dP
 
+SDP810 dP1;  // Create instance of SDP810 for dP1
+SDP810 dP2;  // Create instance of SDP810 for dP2
+SDP810 dP3;  // Create instance of SDP810 for dP3
 
 void setup() {
   Serial.begin(115200);
   Wire.begin();
-  sdp810_Setup();
-  delay(100);
+  dP1.sdp810_Setup();
+  delay(1000);
 }
 
 
 
 
 void loop() {
+  // Set up variables to gather all sensor data
+  SDP810::sdp810_Data dP1_data;  // return types for SDP810 data
 
- 
+
+  dP1_data = dP1.sdp810_Loop();
+
+  char printBuffer[128];  // all sensors share single print buffer
+
+
+  char sdp_diffPressureBuffer[8];
+  char sdp_tempBuffer[8];
+  dtostrf(dP1_data.diffPressure, 4, 2, sdp_diffPressureBuffer);
+  dtostrf(dP1_data.temp, 4, 2, sdp_tempBuffer);
+
+  sprintf(printBuffer, "%5s, %5s, ", sdp_diffPressureBuffer, sdp_tempBuffer);  // just the data
+
+  delay(1000);
 }

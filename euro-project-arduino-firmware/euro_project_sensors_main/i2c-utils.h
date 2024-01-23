@@ -11,6 +11,7 @@ void setupMux() {
     Serial.println("Mux not detected. Freezing...");
     while (1) {
       Serial.println("Please Reset Arduino");
+      delay(5000);
     }
   }
   // Serial.println("Mux detected");

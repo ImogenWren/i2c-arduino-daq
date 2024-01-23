@@ -37,19 +37,19 @@ NOTES:
 
 
 // define the active sensors
-bool CD1_ACTIVE = 0;
-bool CD2_ACTIVE = 0;
-bool CD3_ACTIVE = 0;
-bool CD4_ACTIVE = 0;
-bool CD5_ACTIVE = 0;
-bool CD6_ACTIVE = 0;
-bool RHT3_ACTIVE = 0;
-bool RHT4_ACTIVE = 0;
-bool RHT5_ACTIVE = 0;
-bool RHT6_ACTIVE = 0;
+bool CD1_ACTIVE = 1;
+bool CD2_ACTIVE = 1;
+bool CD3_ACTIVE = 1;
+bool CD4_ACTIVE = 1;
+bool CD5_ACTIVE = 1;
+bool CD6_ACTIVE = 1;
+bool RHT3_ACTIVE = 1;
+bool RHT4_ACTIVE = 1;
+bool RHT5_ACTIVE = 1;
+bool RHT6_ACTIVE = 1;
 bool dP1_ACTIVE = 1;
-bool dP2_ACTIVE = 0;
-bool dP3_ACTIVE = 0;
+bool dP2_ACTIVE = 1;
+bool dP3_ACTIVE = 1;
 
 
 

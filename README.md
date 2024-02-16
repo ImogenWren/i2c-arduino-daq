@@ -9,6 +9,9 @@ _PCB Developed for use with Senserion i2c sensors, though is compatable with any
 - Data output in CSV format over USB Serial connection as MVP for communications or logging with external software
 - Could be improved by the addition of ModBus or JSON formatted data communication with error checking
 
+## PCB
+
+![image](https://github.com/ImogenWren/i2c-arduino-daq/assets/97303986/00418a14-c129-4d94-9d56-caf41dc0b3b5)
 
 
 ## Hardware Required
